@@ -38,9 +38,13 @@ public:
     pose_server_(nh_,name +"_pose",boost::bind(&ServersNode::poseCallBack, this, _1), false),
     action_name_(name)
   {
+    std::string group_name;
+    nh_.param<std::string>(name+"/group_name", group_name, "Manipulator");
+    
     joint_value_server_.start();
     pose_server_.start();
-    move_group_ = new moveit::planning_interface::MoveGroup("Manipulator");
+    ROS_INFO("Loading move group interface for group: %s", group_name.c_str());
+    move_group_ = new moveit::planning_interface::MoveGroup(group_name);
     move_group_->setPlanningTime(10.0); // give it 10 seconds to plan
     move_group_->setNumPlanningAttempts(30.0); // Allow parallel planner to hybridize this many plans
     move_group_->setPlannerId("RRTConnectkConfigDefault"); // use this planner
@@ -59,7 +63,7 @@ public:
     moveit::core::RobotStatePtr current_state = move_group_->getCurrentState();
     double *joint_value = current_state->getVariablePositions();
     std::vector<std::string> var_names = current_state->getVariableNames();
-    ROS_ERROR("%d variables %s %s %s %s %s %s %s", (int)var_names.size(),
+    ROS_DEBUG("%d variables in start state %s %s %s %s %s %s %s", (int)var_names.size(),
 	      var_names[0].c_str(),
 	      var_names[1].c_str(),
 	      var_names[2].c_str(),
@@ -68,8 +72,17 @@ public:
 	      var_names[5].c_str(),
 	      var_names[6].c_str());
     move_group_->setStartState(*current_state);
-    move_group_->setJointValueTarget(goal->joint_values);
+    if(!move_group_->setJointValueTarget(goal->joint_values))
+    {
+      ROS_ERROR("Could not set joint value targets");
+      return;
+    }
+    for(std::size_t i=0; i < goal->joint_values.size(); ++i)
+    {
+      ROS_DEBUG("Moving joint %d to %f", (int) i, goal->joint_values[i]);
+    }
     if(move_group_->move()){
+      ROS_INFO("Move succeeded");
       sleep(1);
       joint_value_server_.setSucceeded();
     }

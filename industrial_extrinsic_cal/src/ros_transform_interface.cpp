@@ -407,7 +407,7 @@ namespace industrial_extrinsic_cal
 
   Pose6d ROSCameraHousingCalTInterface::getIntermediateFrame()
   {
-    ROS_ERROR("intermediate frame from %s to %s",ref_frame_.c_str(), mounting_frame_.c_str());
+    ROS_DEBUG("intermediate frame from %s to %s",ref_frame_.c_str(), mounting_frame_.c_str());
     Pose6d pose =  getPoseFromTF(ref_frame_, mounting_frame_, tf_listener_);
     return(pose);
   }

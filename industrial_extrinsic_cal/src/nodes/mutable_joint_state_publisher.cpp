@@ -125,7 +125,11 @@ namespace industrial_extrinsic_cal
       ROS_ERROR_STREAM("Failed with exception "<< e.what());
       return (false);
     }
-    if(joints_.size() == 0) ROS_ERROR("mutable_joint_state_publisher has no joints");
+    if(joints_.size() == 0) 
+    {
+      ROS_ERROR("mutable_joint_state_publisher has no joints");
+      return false;
+    }
 
     // output so we know they have been read in correctly
     for (std::map<std::string, double>::iterator it= joints_.begin(); it != joints_.end(); ++it){
