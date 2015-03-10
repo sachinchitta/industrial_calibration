@@ -1156,7 +1156,7 @@ namespace industrial_extrinsic_cal
   ceres::Solver::Summary summary;
   options.linear_solver_type = ceres::DENSE_SCHUR;
   options.minimizer_progress_to_stdout = true;
-  options.max_num_iterations = 1000;
+  options.max_num_iterations = 100000;
   ceres::Solve(options, &problem_, &summary);
   ROS_INFO("PROBLEM SOLVED");
   return true;
