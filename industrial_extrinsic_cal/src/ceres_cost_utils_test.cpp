@@ -33,8 +33,8 @@ Observation projectPoint(CameraParameters C, Point3d P)
   /* note, camera transform takes points from camera frame into world frame */
   double aa[3];
   aa[0]=C.pb_extrinsics[0];
-  aa[0]=C.pb_extrinsics[1];
-  aa[0]=C.pb_extrinsics[2];
+  aa[1]=C.pb_extrinsics[1];
+  aa[2]=C.pb_extrinsics[2];
   ceres::AngleAxisRotatePoint(aa, pt, p);
 
   p[0] +=C.pb_extrinsics[3];

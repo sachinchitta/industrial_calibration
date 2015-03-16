@@ -193,7 +193,7 @@ namespace industrial_extrinsic_cal
 	      temp_ti = make_shared<DefaultTransformInterface>(pose);
 	    }
 	    else{
-	      ROS_ERROR("Unimplemented Transform Interface: %s",transform_interface.c_str());
+	      ROS_ERROR("Unimplemented Transform Interface (static camera): %s",transform_interface.c_str());
 	      temp_ti = make_shared<DefaultTransformInterface>(pose);
 	    }
 	    temp_camera->setTransformInterface(temp_ti);// install the transform interface 
@@ -308,7 +308,7 @@ namespace industrial_extrinsic_cal
 	      temp_ti = make_shared<DefaultTransformInterface>(pose);
 	    }
 	    else{
-	      ROS_ERROR("Unimplemented Transform Interface: %s",transform_interface.c_str());
+	      ROS_ERROR("Unimplemented Transform Interface (moving camera): %s",transform_interface.c_str());
 	      temp_ti = make_shared<DefaultTransformInterface>(pose);
 	    }
 	    temp_camera->setTransformInterface(temp_ti);// install the transform interface 
@@ -389,7 +389,7 @@ namespace industrial_extrinsic_cal
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    else{
-	      ROS_ERROR("Unimplemented Transform Interface: %s",transform_interface.c_str());
+	      ROS_ERROR("Unimplemented Transform Interface (static target): %s",transform_interface.c_str());
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    temp_target->setTransformInterface(temp_ti);// install the transform interface 
@@ -440,19 +440,23 @@ namespace industrial_extrinsic_cal
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    else{
-	      ROS_ERROR("Unimplemented Transform Interface: %s",transform_interface.c_str());
+	      ROS_ERROR("Unimplemented Transform Interface for moving targets: %s",transform_interface.c_str());
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    temp_target->setTransformInterface(temp_ti);// install the transform interface 
+	    ROS_INFO("Set transform interface");
 	    
 	    // set parameters by the target's type
 	    temp_target->target_type_ = this_target["target_type"].as<unsigned int>();
-
+	    ROS_INFO("Read target type");
 	    switch (temp_target->target_type_)
 	      {
 	      case pattern_options::Chessboard:
 		temp_target->checker_board_parameters_.pattern_rows = this_target["target_rows"].as<int>();
+		ROS_INFO("Read target rows");
+
 		temp_target->checker_board_parameters_.pattern_cols = this_target["target_cols"].as<int>();
+		ROS_INFO("Read target cols");
 		ROS_INFO_STREAM("TargetRows: "<<temp_target->checker_board_parameters_.pattern_rows);
 		break;
 	      case pattern_options::CircleGrid:
@@ -467,12 +471,18 @@ namespace industrial_extrinsic_cal
 		break;
 	      }
 	    temp_target->pose_.ax = this_target["angle_axis_ax"].as<double>();
+	    ROS_INFO("Read ax");
 	    temp_target->pose_.ay = this_target["angle_axis_ay"].as<double>();
+	    ROS_INFO("Read ay");
 	    temp_target->pose_.az = this_target["angle_axis_az"].as<double>();
+	    ROS_INFO("Read az");
 	    temp_target->pose_.x = this_target["position_x"].as<double>();
+	    ROS_INFO("Read x");
 	    temp_target->pose_.y = this_target["position_y"].as<double>();
+	    ROS_INFO("Read y");
 	    temp_target->pose_.z = this_target["position_z"].as<double>();
-	    transform_interface  = this_target["transform_interface"].as<std::string>();
+	    ROS_INFO("Read z");
+	    /*	    transform_interface  = this_target["transform_interface"].as<std::string>();
 	    if(transform_interface == std::string("ros_lti")){
 	      temp_ti = make_shared<ROSListenerTransInterface>(temp_target->target_frame_);
 	    }
@@ -483,12 +493,13 @@ namespace industrial_extrinsic_cal
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    else{
-	      ROS_ERROR("Unimplemented Transform Interface: %s",transform_interface.c_str());
+	      ROS_ERROR("Unimplemented Transform Interface (moving target 2): %s",transform_interface.c_str());
 	      temp_ti = make_shared<DefaultTransformInterface>(temp_target->pose_);
 	    }
 	    temp_target->setTransformInterface(temp_ti);// install the transform interface 
-
+	    */
 	    scene_id = this_target["scene_id"].as<unsigned int>();
+	    ROS_INFO("Read scene id");
 	    temp_target->num_points_ = this_target["num_points"].as<int>();
 	    const YAML::Node points_node = this_target["points"];
 	    ROS_DEBUG_STREAM("FoundPoints: " << points_node.size());

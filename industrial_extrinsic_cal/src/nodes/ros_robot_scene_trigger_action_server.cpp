@@ -83,7 +83,7 @@ public:
     }
     if(move_group_->move()){
       ROS_INFO("Move succeeded");
-      sleep(1);
+      sleep(3);
       joint_value_server_.setSucceeded();
     }
     else{
